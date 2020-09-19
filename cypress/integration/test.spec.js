@@ -1,6 +1,6 @@
 describe('First test', () => {
     it('first step', () => {
-        cy.get("#asd").should('be.visible')
+        cy.visit('http://localhost:4200')
     });
 
     it('second step', () => {
