@@ -34,7 +34,7 @@ describe('First test', () => {
          .and('contain','ccc')
     });
 
-    it('verify global feed and likes count', () => {
+    it.only('verify global feed and likes count', () => {
         cy.route("GET","**/feed*", '{"articles":[],"articlesCount":0}')
         cy.route("GET","**/articles*", "fixture:articles.json")
 
@@ -43,6 +43,13 @@ describe('First test', () => {
             expect(listOfButtons[0]).to.contain('1')
             expect(listOfButtons[1]).to.contain('5')
         })
+
+        cy.fixture('articles').then(file =>{
+            const articleLink = file.articles[1].slug 
+            cy.route("POST",'**/articles/'+articleLink+'/favourite', file)
+        })
+
+        cy.get('app-article-list button').eq(1).click().should('contain','6')
     });
 
  
