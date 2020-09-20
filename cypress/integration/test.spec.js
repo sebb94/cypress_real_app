@@ -34,5 +34,16 @@ describe('First test', () => {
          .and('contain','ccc')
     });
 
+    it('verify global feed and likes count', () => {
+        cy.route("GET","**/feed*", '{"articles":[],"articlesCount":0}')
+        cy.route("GET","**/articles*", "fixture:articles.json")
+
+        cy.contains('Global Feed').click()
+        cy.get('app-article-list button').then( listOfButtons => {
+            expect(listOfButtons[0]).to.contain('1')
+            expect(listOfButtons[1]).to.contain('5')
+        })
+    });
+
  
 });
