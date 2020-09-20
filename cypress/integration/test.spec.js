@@ -1,6 +1,8 @@
 describe('First test', () => {
 
     beforeEach(() => {
+        cy.server()
+        cy.route('GET','**/tags','fixture:tags.json')
         cy.loginToApp()
     });
     
@@ -23,6 +25,13 @@ describe('First test', () => {
           expect(xhr.request.body.article.body).to.equal('Article body')
           expect(xhr.response.body.article.description).to.equal('Article description')
       })
+    });
+
+    it('should gave tags with routing objects', () => {
+        cy.get('.tag-list')
+         .should('contain','aaa')
+         .and('contain','bbb')
+         .and('contain','ccc')
     });
 
  
