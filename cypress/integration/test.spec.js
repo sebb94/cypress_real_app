@@ -34,7 +34,7 @@ describe('First test', () => {
          .and('contain','ccc')
     });
 
-    it.only('verify global feed and likes count', () => {
+    it('verify global feed and likes count', () => {
         cy.route("GET","**/feed*", '{"articles":[],"articlesCount":0}')
         cy.route("GET","**/articles*", "fixture:articles.json")
 
@@ -50,6 +50,57 @@ describe('First test', () => {
         })
 
         cy.get('app-article-list button').eq(1).click().should('contain','6')
+    });
+    
+    it.only('delete new artile in global feed', () => {
+        
+        const userCredentails ={
+            "user" : {
+                "email" : "omgl0lwth@gmail.com",
+                'password' : "12345678"
+            }
+        }
+
+        const bodyRequest = {
+            "article" : {
+                "tagList": [],
+                "title" : "Request from api",
+                "description" : "API testing is easy",
+                "body" : "angular is cool"
+            }
+        }
+
+        cy.request('POST','http://conduit.productionready.io/api/users/login', userCredentails)
+         .its('body').then( body => {
+             const token = body.user.token 
+
+             cy.request({
+                 url : "http://conduit.productionready.io/api/articles",
+                 headers : {
+                     'Authorization' : "Token " + token,
+                 },
+                 method: "POST",
+                 body : bodyRequest
+             }).then(response => {
+                 expect(response.status).to.equal(200)
+             })
+
+             cy.contains('Global Feed').click()
+             cy.get('.article-preview').first().click()
+             cy.get('.article-actions').contains('Delete Article').click()
+
+             cy.request({
+                url : "http://conduit.productionready.io/api/articles?limit=10&offset=0",
+                headers : {
+                    'Authorization' : "Token " + token,
+                },
+                method : "GET"
+             }).its('body').then( body => {
+                 expect(body.articles[0].title).not.to.equal('Response from API')
+             })
+
+         })
+
     });
 
  
