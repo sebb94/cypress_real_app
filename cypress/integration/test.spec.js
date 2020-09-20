@@ -52,15 +52,8 @@ describe('First test', () => {
         cy.get('app-article-list button').eq(1).click().should('contain','6')
     });
     
-    it.only('delete new artile in global feed', () => {
+    it('delete new artile in global feed', () => {
         
-        const userCredentails ={
-            "user" : {
-                "email" : "omgl0lwth@gmail.com",
-                'password' : "12345678"
-            }
-        }
-
         const bodyRequest = {
             "article" : {
                 "tagList": [],
@@ -70,10 +63,8 @@ describe('First test', () => {
             }
         }
 
-        cy.request('POST','http://conduit.productionready.io/api/users/login', userCredentails)
-         .its('body').then( body => {
-             const token = body.user.token 
-
+        cy.get('@token').then( token => {
+            
              cy.request({
                  url : "http://conduit.productionready.io/api/articles",
                  headers : {
