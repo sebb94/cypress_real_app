@@ -1,9 +1,12 @@
 describe('First test', () => {
+
+    beforeEach(() => {
+        cy.loginToApp()
+    });
+    
     it('first step', () => {
-        cy.visit('http://localhost:4200')
+      
     });
 
-    it('second step', () => {
-        
-    });
+ 
 });
